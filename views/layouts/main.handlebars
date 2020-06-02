@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    
+
+    <title>Ebook</title>
+</head>
+<body class="white-primary text-bg">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark py-3">
+        <div class="container">
+            <a href="" class="navbar-brand">
+                <h3 class="d-inline align-middle">Ebook Website</h3>
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+         {{{body}}}
+    </div>
+</body>
+<script>
+    
+    // Create a Checkout Session with the selected quantity
+
+  var createCheckoutSession = function () {
+    return fetch('/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (result) {
+      return result.json();
+    }).catch(error => console.log(error))
+  };
+
+      // Setup event handler to create a Checkout Session on submit
+      var stripe = Stripe('pk_test_NezeOJysg4glHpGCKu4sF37V00GuPYtbUj');
+      window.onload = function () {
+     /* Get your Stripe publishable key to initialize Stripe.js */
+        fetch('/config')
+        .then(function (result) {
+            return result.json();
+        })
+        .then(function (json) {
+            window.config = json;
+        
+            // Setup event handler to create a Checkout Session on submit
+            document.querySelector('#submit').addEventListener('click', function (evt) {
+        
+            createCheckoutSession().then(function (data) {
+                console.log(data)
+                stripe
+                .redirectToCheckout({
+                    sessionId: data.sessionId
+                })
+                .then(res=>console.log(res));
+            });
+            });
+        });
+
+}
+
+</script>
+</html>
